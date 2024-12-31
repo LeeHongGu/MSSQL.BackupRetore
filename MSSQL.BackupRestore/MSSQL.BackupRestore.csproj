@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.11.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="172.52.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Works\" />
+    <Folder Include="Configurations\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Utils\" />
+  </ItemGroup>
+
 </Project>
