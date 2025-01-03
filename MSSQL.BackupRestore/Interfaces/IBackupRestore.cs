@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MSSQL.BackupRestore.Interfaces
@@ -14,7 +15,7 @@ namespace MSSQL.BackupRestore.Interfaces
 
         event ServerMessageEventHandler Complete;
         event ServerMessageEventHandler Information;
-        event ServerMessageEventHandler PercentComplete;
+        event PercentCompleteEventHandler PercentComplete;
 
         Task ExecuteAsync(Server server, CancellationToken ct = default);
     }
