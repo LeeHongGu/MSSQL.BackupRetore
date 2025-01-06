@@ -71,13 +71,18 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// <param name="databaseName">The name of the database to back up.</param>
         /// <param name="backup">The <see cref="Backup"/> object representing the backup operation.</param>
         /// <param name="optionDelegate">Optional delegate for configuring the backup object.</param>
-        public BackupBase(ILogger logger, string databaseName, Backup backup, Action<Backup> optionDelegate = null)
+        protected BackupBase(ILogger logger, string databaseName, Backup backup, Action<Backup> optionDelegate = null)
         {
             _logger = logger;
             _backup = backup;
             optionDelegate?.Invoke(_backup);
 
             DatabaseName = databaseName;
+        }
+
+        protected BackupBase(ILogger logger, string databaseName, Action<Backup> optionDelegate = null)
+            : this(logger, databaseName, new Backup(), optionDelegate)
+        {    
         }
 
         /// <summary>

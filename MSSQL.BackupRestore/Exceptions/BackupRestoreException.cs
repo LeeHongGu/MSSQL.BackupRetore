@@ -30,6 +30,11 @@ namespace MSSQL.BackupRestore.Exceptions
         {
         }
 
+        public BackupRestoreException(Exception innerException, string message)
+            : base(message, innerException)
+        {
+        }
+
         // 특정 파라미터와 메시지를 전달하는 생성자
         public BackupRestoreException(string param, string message) 
             : base($"{param}: {message}")
