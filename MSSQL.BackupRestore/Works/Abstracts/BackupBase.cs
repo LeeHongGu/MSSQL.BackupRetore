@@ -85,10 +85,10 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         protected BackupBase(ILogger logger, string databaseName, Backup backup, Action<Backup> optionDelegate = null)
         {
             _logger = logger;
-            _backup = backup;
-            optionDelegate?.Invoke(_backup);
+            DatabaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName), "Database name cannot be null.");
+            _backup = backup ?? throw new ArgumentNullException(nameof(backup), "Backup object cannot be null.");
 
-            DatabaseName = databaseName;
+            optionDelegate?.Invoke(_backup);
         }
 
         protected BackupBase(ILogger logger, string databaseName, Action<Backup> optionDelegate = null)
@@ -101,10 +101,7 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// </summary>
         /// <param name="deviceName">The name of the backup device.</param>
         /// <param name="deviceType">The type of the backup device.</param>
-        public void AddDevice(string deviceName, DeviceType deviceType)
-        {
-            AddDevice(new BackupDeviceItem(deviceName, deviceType));
-        }
+        public void AddDevice(string deviceName, DeviceType deviceType) => AddDevice(new BackupDeviceItem(deviceName, deviceType));
 
         /// <summary>
         /// Adds a backup device represented by a <see cref="BackupDeviceItem"/>.
