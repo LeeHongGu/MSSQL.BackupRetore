@@ -4,8 +4,14 @@ using Microsoft.SqlServer.Management.Smo;
 using MSSQL.BackupRestore.Configurations;
 using MSSQL.BackupRestore.Exceptions;
 using MSSQL.BackupRestore.Interfaces;
+using MSSQL.BackupRestore.Works.Abstracts;
+using MSSQL.BackupRestore.Works.BackupWorks;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +33,11 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// Represents the SQL Server backup operation being managed.
         /// </summary>
         private readonly Backup _backup;
+
+        /// <summary>
+        /// The file path where the backup will be stored.
+        /// </summary>
+        protected string _filePath;
 
         /// <summary>
         /// Event triggered when the backup operation is complete.
@@ -124,6 +135,13 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// </summary>
         /// <returns>A <see cref="BackupDeviceItem"/> representing the backup device.</returns>
         protected abstract BackupDeviceItem SetDevice();
+
+        /// <summary>
+        /// Initializes the backup operation by setting the file path and database name.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="databaseName"></param>
+        protected abstract void Initialize(string filePath, string databaseName);
 
         /// <summary>
         /// Executes the backup operation asynchronously.
