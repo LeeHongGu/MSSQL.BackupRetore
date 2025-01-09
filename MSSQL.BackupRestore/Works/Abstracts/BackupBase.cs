@@ -22,7 +22,7 @@ namespace MSSQL.BackupRestore.Works.Abstracts
     /// Provides functionality for configuring backup devices, executing backups, 
     /// and handling events related to backup progress and completion.
     /// </summary>
-    public abstract class BackupBase : IBackupRestore
+    public abstract class BackupBase : IBackupRestore, IFileSystem
     {
         /// <summary>
         /// Logger instance for recording log messages related to backup operations.
@@ -132,6 +132,17 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// </summary>
         /// <returns>A <see cref="BackupDeviceItem"/> representing the backup device.</returns>
         protected abstract BackupDeviceItem SetDevice();
+
+        /// <summary>
+        /// Validates the file path for the backup operation.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void ValidateFilePath(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                throw new ArgumentNullException(nameof(filePath), "File path cannot be null.");
+        }
 
         /// <summary>
         /// Initializes the backup operation by setting the file path and database name.
