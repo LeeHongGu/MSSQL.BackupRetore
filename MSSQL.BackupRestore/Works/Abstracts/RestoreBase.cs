@@ -30,6 +30,11 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         private readonly Restore _restore;
 
         /// <summary>
+        /// The file path where the backed up database is stored.
+        /// </summary>
+        protected string _filePath;
+
+        /// <summary>
         /// Gets or sets the name of the database to be restored.
         /// </summary>
         public string DatabaseName
@@ -109,6 +114,13 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// </summary>
         /// <returns>A <see cref="BackupDeviceItem"/> representing the restore device.</returns>
         protected abstract BackupDeviceItem SetDevice();
+
+        /// <summary>
+        /// Initializes the restore operation by setting the file path and database name.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="databaseName"></param>
+        protected abstract void Initialize(string filePath, string databaseName);
 
         /// <summary>
         /// Adds a restore device to the restore operation.
