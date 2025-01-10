@@ -116,6 +116,12 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         protected abstract BackupDeviceItem SetDevice();
 
         /// <summary>
+        /// Configures the restore device for the operation with default settings.
+        /// </summary>
+        /// <returns>A <see cref="BackupDeviceItem"/> representing the restore device.</returns>
+        public BackupDeviceItem CreateDefaultDevice() => new BackupDeviceItem(_filePath, DeviceType.File);
+
+        /// <summary>
         /// Initializes the restore operation by setting the file path and database name.
         /// </summary>
         /// <param name="filePath"></param>
