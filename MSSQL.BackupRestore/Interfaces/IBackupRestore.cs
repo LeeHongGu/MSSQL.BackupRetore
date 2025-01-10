@@ -17,6 +17,7 @@ namespace MSSQL.BackupRestore.Interfaces
         event ServerMessageEventHandler Information;
         event PercentCompleteEventHandler PercentComplete;
 
+        BackupDeviceItem CreateDefaultDevice();
         Task ExecuteAsync(Server server, CancellationToken ct = default);
     }
 }

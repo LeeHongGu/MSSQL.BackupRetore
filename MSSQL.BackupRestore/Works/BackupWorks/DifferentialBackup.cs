@@ -71,10 +71,6 @@ namespace MSSQL.BackupRestore.Works.BackupWorks
         /// Configures the backup device for the operation.
         /// </summary>
         /// <returns>A <see cref="BackupDeviceItem"/> representing the file device for the backup.</returns>
-        protected override BackupDeviceItem SetDevice()
-        {
-            return new BackupDeviceItem(_filePath, DeviceType.File);
-        }
+        protected override BackupDeviceItem SetDevice() => CreateDefaultDevice();
     }
-
 }
