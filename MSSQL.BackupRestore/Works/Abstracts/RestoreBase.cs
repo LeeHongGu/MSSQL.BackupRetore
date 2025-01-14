@@ -17,7 +17,7 @@ namespace MSSQL.BackupRestore.Works.Abstracts
     /// Base class for database restore operations in MSSQL.
     /// Provides common functionality for configuring and executing restore tasks.
     /// </summary>
-    public abstract class RestoreBase : FileSystem, IBackupRestore, INoRecoverable 
+    public abstract class RestoreBase : FileSystem, IBackupRestore, INoRecoverable, IWorkSet
     {
         /// <summary>
         /// Logger instance for recording restore operation events and debugging information.
