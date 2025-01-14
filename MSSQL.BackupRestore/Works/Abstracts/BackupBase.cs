@@ -22,7 +22,7 @@ namespace MSSQL.BackupRestore.Works.Abstracts
     /// Provides functionality for configuring backup devices, executing backups, 
     /// and handling events related to backup progress and completion.
     /// </summary>
-    public abstract class BackupBase : IBackupRestore, IFileSystem
+    public abstract class BackupBase : IBackupRestore, IFileSystem, IWorkSet
     {
         /// <summary>
         /// Logger instance for recording log messages related to backup operations.

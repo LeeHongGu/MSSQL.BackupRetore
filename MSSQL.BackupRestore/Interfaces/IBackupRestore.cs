@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MSSQL.BackupRestore.Interfaces
 {
-    internal interface IBackupRestore
+    public interface IBackupRestore
     {
         string DatabaseName { get; }
 
@@ -17,7 +17,6 @@ namespace MSSQL.BackupRestore.Interfaces
         event ServerMessageEventHandler Information;
         event PercentCompleteEventHandler PercentComplete;
 
-        BackupDeviceItem CreateDefaultDevice();
         Task ExecuteAsync(Server server, CancellationToken ct = default);
     }
 }
