@@ -60,7 +60,7 @@ namespace MSSQL.BackupRestore.Works.BackupWorks
         /// <exception cref="ArgumentNullException">Thrown if the <paramref name="filePath"/> is null or empty.</exception>
         protected override void Initialize(string filePath, string databaseName)
         {
-            ValidateFilePath(filePath);
+            CheckNullFilePath(filePath);
             _filePath = filePath;
             _logger?.LogDebug("Initialized transaction log backup for database {DatabaseName} with file path {filePath}", databaseName, _filePath);
         }

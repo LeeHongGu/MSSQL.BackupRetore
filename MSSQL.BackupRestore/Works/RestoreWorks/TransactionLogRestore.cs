@@ -78,9 +78,6 @@ namespace MSSQL.BackupRestore.Works.RestoreWorks
         {
             ValidateFilePath(filePath);
             _filePath = filePath;
-            if (!IsFileExists(filePath))
-                throw new BackupRestoreException(new FileNotFoundException("The Backup file does not exist.", filePath));
-
             _logger.LogDebug("Initialized Transaction Log Restore operation for database '{DatabaseName}' from file '{FilePath}'.", databaseName, filePath);
         }
 

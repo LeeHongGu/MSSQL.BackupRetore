@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using MSSQL.BackupRestore.Exceptions;
 using MSSQL.BackupRestore.Interfaces;
+using MSSQL.BackupRestore.Works.Abstracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,11 +14,8 @@ using System.Threading.Tasks;
 
 namespace MSSQL.BackupRestore.Works.RestoreWorks
 {
-    public class RecoveryJob : IBackupRestore, IRecoveryJob
+    public class RecoveryJob : FileSystem, IBackupRestore, IRecoveryJob
     {
-        private const string BACKUP_EXTENSION = ".bak";
-        private const string LOG_EXTENSION = ".trn";
-
         private IList<IBackupRestore> _backupRestoreList = new List<IBackupRestore>();
         private readonly ILogger _logger;
 
@@ -56,19 +54,8 @@ namespace MSSQL.BackupRestore.Works.RestoreWorks
 
         public void FullRestore(string filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath))
-                throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException("Backup file not found.", filePath);
-            if (!IsBackupFile(filePath))
-                throw new BackupRestoreException(filePath, "Invalid backup file extension.");
-
+            ValidateFilePath(filePath);
             AddBackupRestore(new FullRestore(DatabaseName, filePath));
-        }
-
-        private static bool IsBackupFile(string filePath)
-        {
-            return Path.GetExtension(filePath) == BACKUP_EXTENSION || Path.GetExtension(filePath) == LOG_EXTENSION;
         }
 
         public Task ExecuteAsync(Server server, CancellationToken ct = default)

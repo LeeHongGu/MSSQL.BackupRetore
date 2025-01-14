@@ -145,7 +145,7 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// </summary>
         /// <param name="filePath"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void ValidateFilePath(string filePath)
+        public void CheckNullFilePath(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 throw new ArgumentNullException(nameof(filePath), "File path cannot be null.");

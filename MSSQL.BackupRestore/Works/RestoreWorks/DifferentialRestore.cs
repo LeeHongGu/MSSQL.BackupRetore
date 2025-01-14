@@ -73,8 +73,6 @@ namespace MSSQL.BackupRestore.Works.RestoreWorks
         {
             ValidateFilePath(filePath);
             _filePath = filePath;
-            if (!IsFileExists(filePath))
-                throw new BackupRestoreException(new FileNotFoundException("The specified backup file does not exist.", filePath));
             _logger?.LogDebug("Initialized differential restore operation for database {DatabaseName} from file {FilePath}.", databaseName, filePath);
         }
 
