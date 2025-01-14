@@ -62,7 +62,7 @@ namespace MSSQL.BackupRestore.Works.BackupWorks
         /// <exception cref="ArgumentNullException">Thrown if the <paramref name="filePath"/> is null.</exception>
         protected override void Initialize(string filePath, string databaseName)
         {
-            ValidateFilePath(filePath);
+            CheckNullFilePath(filePath);
             _filePath = filePath;
             _logger?.LogDebug("Initialized differential backup for database {databaseName} with file path {filePath}", databaseName, _filePath);
         }

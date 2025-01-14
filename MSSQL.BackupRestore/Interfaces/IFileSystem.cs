@@ -8,6 +8,6 @@ namespace MSSQL.BackupRestore.Interfaces
 {
     internal interface IFileSystem
     {
-        void ValidateFilePath(string filePath);
+        void CheckNullFilePath(string filePath);
     }
 }
