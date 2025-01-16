@@ -8,6 +8,6 @@ namespace MSSQL.BackupRestore.Interfaces
 {
     public interface IRecoveryJob
     {
-        void AddBackupRestore(IBackupRestore backupRestore);
+        void AddRestoreOperation(IBackupRestore backupRestore);
     }
 }

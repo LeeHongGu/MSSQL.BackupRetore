@@ -3,7 +3,9 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using MSSQL.BackupRestore.Configurations;
 using MSSQL.BackupRestore.Exceptions;
+using MSSQL.BackupRestore.Extensions;
 using MSSQL.BackupRestore.Interfaces;
+using MSSQL.BackupRestore.Utils;
 using MSSQL.BackupRestore.Works.Abstracts;
 using MSSQL.BackupRestore.Works.BackupWorks;
 using Newtonsoft.Json.Linq;
@@ -12,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -159,6 +162,38 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         protected abstract void Initialize(string filePath, string databaseName);
 
         /// <summary>
+        /// Generates a metadata file containing backup details.
+        /// </summary>
+        protected void GenerateBackupMetadata()
+        {
+            // BackupActionType + Incremental을 기반으로 BackupType을 결정
+            var backupType = BackupTypeExtensions.DetermineBackupType(_backup);
+
+            var metadata = new BackupMetadata
+            {
+                DatabaseName = DatabaseName,
+                BackupType = backupType.ToString(),
+                BackupFilePath = _filePath,
+                CreatedAt = DateTime.Now,
+                BackupDescription = $"{backupType} backup for {DatabaseName} created on {DateTime.Now}."
+            };
+
+            var metadataFilePath = Path.ChangeExtension(_filePath, ".meta.json");
+
+            try
+            {
+                var json = JsonSerializer.Serialize(metadata, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(metadataFilePath, json);
+                _logger?.LogInformation("Backup metadata created at {MetadataFilePath}", metadataFilePath);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Failed to create backup metadata file for {DatabaseName}.", DatabaseName);
+                throw new IOException("Failed to create metadata file.", ex);
+            }
+        }
+
+        /// <summary>
         /// Executes the backup operation asynchronously.
         /// </summary>
         /// <param name="server">The SQL Server instance where the backup will be performed.</param>
@@ -193,6 +228,8 @@ namespace MSSQL.BackupRestore.Works.Abstracts
             await Task.Run(() => _backup.Wait(), ct);
 
             _logger?.LogInformation("Backup completed for database {DatabaseName}", DatabaseName);
+
+            GenerateBackupMetadata();
         }
     }
 
