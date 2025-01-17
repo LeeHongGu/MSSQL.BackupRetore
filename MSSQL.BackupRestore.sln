@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSSQL.BackupRestore", "MSSQL.BackupRestore\MSSQL.BackupRestore.csproj", "{C64D7822-0184-4512-BDB9-236730B8339D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSSQL.BackupRestore.UnitTest", "MSSQL.BackupRestore.UnitTest\MSSQL.BackupRestore.UnitTest.csproj", "{0DA34C5D-E139-4BAB-8460-3571BB0DB20A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C64D7822-0184-4512-BDB9-236730B8339D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C64D7822-0184-4512-BDB9-236730B8339D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C64D7822-0184-4512-BDB9-236730B8339D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DA34C5D-E139-4BAB-8460-3571BB0DB20A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA34C5D-E139-4BAB-8460-3571BB0DB20A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA34C5D-E139-4BAB-8460-3571BB0DB20A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA34C5D-E139-4BAB-8460-3571BB0DB20A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
