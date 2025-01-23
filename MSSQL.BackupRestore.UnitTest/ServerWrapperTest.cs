@@ -13,15 +13,34 @@ namespace MSSQL.BackupRestore.UnitTest
     [TestFixture]
     public class ServerWrapperTests
     {
-        private Mock<Server> _mockServer;
+        private Server _server;
         private ServerWrapper _serverWrapper;
+        private const string TestDatabaseName = "TestDB";
 
         [SetUp]
         public void Setup()
         {
-            // Moq를 사용하여 Server 객체를 Mocking
-            _mockServer = new Mock<Server>();
-            _serverWrapper = new ServerWrapper(_mockServer.Object);
+            // 실제 서버에 연결 (로컬 또는 원격 서버)
+            _server = new Server("localhost");
+            _serverWrapper = new ServerWrapper(_server);
+
+            // 테스트 환경 설정: 테스트 데이터베이스가 없으면 생성
+            if (!_server.Databases.Contains(TestDatabaseName))
+            {
+                var testDatabase = new Database(_server, TestDatabaseName);
+                testDatabase.Create();
+            }
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            // 테스트 후 정리: 테스트 데이터베이스 삭제
+            if (_server.Databases.Contains(TestDatabaseName))
+            {
+                var testDatabase = _server.Databases[TestDatabaseName];
+                testDatabase.Drop();
+            }
         }
 
         /// <summary>
@@ -39,13 +58,10 @@ namespace MSSQL.BackupRestore.UnitTest
         [Test]
         public void ContainsDatabase_ShouldReturnTrue_WhenDatabaseExists()
         {
-            var mockDatabases = new Mock<DatabaseCollection>(_mockServer.Object);
-            mockDatabases.Setup(db => db.Contains("TestDB")).Returns(true);
+            // Act
+            var result = _serverWrapper.ContainsDatabase(TestDatabaseName);
 
-            _mockServer.Setup(s => s.Databases).Returns(mockDatabases.Object);
-
-            var result = _serverWrapper.ContainsDatabase("TestDB");
-
+            // Assert
             Assert.That(result, Is.True);
         }
 
@@ -55,13 +71,10 @@ namespace MSSQL.BackupRestore.UnitTest
         [Test]
         public void ContainsDatabase_ShouldReturnFalse_WhenDatabaseDoesNotExist()
         {
-            var mockDatabases = new Mock<DatabaseCollection>(_mockServer.Object);
-            mockDatabases.Setup(db => db.Contains("NonExistentDB")).Returns(false);
-
-            _mockServer.Setup(s => s.Databases).Returns(mockDatabases.Object);
-
+            // Act
             var result = _serverWrapper.ContainsDatabase("NonExistentDB");
 
+            // Assert
             Assert.That(result, Is.False);
         }
 
@@ -71,15 +84,12 @@ namespace MSSQL.BackupRestore.UnitTest
         [Test]
         public void GetDatabase_ShouldReturnDatabase_WhenDatabaseExists()
         {
-            var mockDatabase = new Mock<Database>(_mockServer.Object, "TestDB");
-            var mockDatabases = new Mock<DatabaseCollection>(_mockServer.Object);
-            mockDatabases.Setup(db => db["TestDB"]).Returns(mockDatabase.Object);
+            // Act
+            var database = _serverWrapper.GetDatabase(TestDatabaseName);
 
-            _mockServer.Setup(s => s.Databases).Returns(mockDatabases.Object);
-
-            var result = _serverWrapper.GetDatabase("TestDB");
-
-            Assert.That(result, Is.EqualTo(mockDatabase.Object));
+            // Assert
+            Assert.That(database, Is.Not.Null);
+            Assert.That(database.Name, Is.EqualTo(TestDatabaseName));
         }
 
         /// <summary>
@@ -88,35 +98,43 @@ namespace MSSQL.BackupRestore.UnitTest
         [Test]
         public void GetDatabase_ShouldReturnNull_WhenDatabaseDoesNotExist()
         {
-            var mockDatabases = new Mock<DatabaseCollection>(_mockServer.Object);
-            mockDatabases.Setup(db => db["NonExistentDB"]).Returns((Database)null);
+            // Act
+            var database = _serverWrapper.GetDatabase("NonExistentDB");
 
-            _mockServer.Setup(s => s.Databases).Returns(mockDatabases.Object);
-
-            var result = _serverWrapper.GetDatabase("NonExistentDB");
-
-            Assert.That(result, Is.Null);
+            // Assert
+            Assert.That(database, Is.Null);
         }
 
         /// <summary>
         /// 서버 메시지 핸들러가 정상적으로 등록되는지 테스트합니다.
         /// </summary>
         [Test]
-        public void AddServerMessageHandler_ShouldAttachHandler()
+        public void AddServerMessageHandler_ShouldAttachHandler_WithRealServer()
         {
-            var mockConnectionContext = new Mock<ServerConnection>();
-            _mockServer.Setup(s => s.ConnectionContext).Returns(mockConnectionContext.Object);
+            // Arrange
+            var serverWrapper = new ServerWrapper(_server);
 
             var eventTriggered = false;
 
-            void Handler(ServerMessageEventArgs e) => eventTriggered = true;
+            void Handler(ServerMessageEventArgs e)
+            {
+                eventTriggered = true;
+                Console.WriteLine($"Server Message: {e.Error.Message}");
+            }
 
-            _serverWrapper.AddServerMessageHandler(Handler);
+            serverWrapper.AddServerMessageHandler(Handler);
 
-            // 이벤트 발생 시뮬레이션
-            var sqlErrorCollection = Activator.CreateInstance(typeof(SqlError), true) as SqlError;
-            mockConnectionContext.Raise(m => m.ServerMessage += null, new ServerMessageEventArgs(sqlErrorCollection));
+            // Act: 유효하지 않은 SQL 실행
+            try
+            {
+                _server.ConnectionContext.ExecuteNonQuery("INVALID SQL QUERY");
+            }
+            catch
+            {
+                // 예외를 무시합니다. 이벤트가 트리거되는지만 확인.
+            }
 
+            // Assert
             Assert.That(eventTriggered, Is.True);
         }
 
