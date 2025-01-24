@@ -41,6 +41,9 @@ namespace MSSQL.BackupRestore.UnitTest
                 var testDatabase = _server.Databases[TestDatabaseName];
                 testDatabase.Drop();
             }
+
+            // _serverWrapper를 Dispose하여 리소스 해제
+            _serverWrapper?.Dispose();
         }
 
         /// <summary>
