@@ -88,8 +88,8 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         protected BackupBase(ILogger logger, string databaseName, Backup backup, Action<Backup> optionDelegate = null)
         {
             _logger = logger;
-            DatabaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName), "Database name cannot be null.");
             _backup = backup ?? throw new ArgumentNullException(nameof(backup), "Backup object cannot be null.");
+            DatabaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName), "Database name cannot be null.");
 
             optionDelegate?.Invoke(_backup);
         }
@@ -112,14 +112,21 @@ namespace MSSQL.BackupRestore.Works.Abstracts
         /// <param name="device">The backup device to add.</param>
         public void AddDevice(BackupDeviceItem device)
         {
+            if (_backup?.Devices == null)
+            {
+                _logger.LogError("Backup devices collection is not initialized.");
+                throw new InvalidOperationException("Backup devices collection is not initialized.");
+            }
+
             var existingDevice = _backup.Devices.Find(x => x.DeviceType == device.DeviceType);
+
+            if (!(existingDevice is null))
+            {
+                _backup.Devices.Remove(existingDevice);
+            }
+
             if (existingDevice?.Name != device.Name)
             {
-                if (existingDevice != null)
-                {
-                    _backup.Devices.Remove(existingDevice);
-                }
-
                 _backup.Devices.AddDevice(device.Name, device.DeviceType);
                 _logger.LogInformation("Backup device added: {DeviceName}", device.Name);
             }

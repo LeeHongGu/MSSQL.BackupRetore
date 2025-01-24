@@ -37,7 +37,7 @@ namespace MSSQL.BackupRestore.Configurations
         /// <returns>A configured <see cref="Server"/> object.</returns>
         /// <exception cref="ArgumentException">Thrown when any of the required parameters are null or invalid.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the connection context could not be initialized.</exception>
-        public static IServer CreateServer(
+        public static Server CreateServer(
             string serverName,
             string serverId,
             string serverPassword,
@@ -69,7 +69,7 @@ namespace MSSQL.BackupRestore.Configurations
 
             logger.LogDebug("Server {serverName} created.", serverName);
 
-            return new ServerWrapper(server);
+            return new ServerWrapper(server).GetServer();
         }
 
         /// <summary>
