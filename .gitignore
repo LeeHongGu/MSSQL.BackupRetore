@@ -398,3 +398,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/MSSQL.BackupRestore.Prototype/appsettings.json.bak
